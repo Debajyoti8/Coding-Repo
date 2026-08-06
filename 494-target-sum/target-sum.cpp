@@ -1,32 +1,10 @@
 class Solution {
 public:
-    int f(int i,vector<int>& nums,int sum,vector<vector<int>> &dp)
-    {
-        if(i==0)
-        {
-            if(sum==0 && nums[0]==0)
-            return 2;
-            else if(sum==0 || nums[0]==sum)
-            return 1;
-            else 
-            return 0;
-        }
-        if(dp[i][sum]!=-1) return dp[i][sum];
-
-        int nottake = f(i-1, nums, sum,dp);
-
-        int take = 0;
-        if(nums[i] <= sum)
-            take = f(i-1, nums, sum-nums[i],dp);
-
-
-        return dp[i][sum]=take + nottake;
-    }
 
     int findTargetSumWays(vector<int>& nums, int target) {
-        //Memoization code
+        //Tabulation code
         // Time: O(n × sum)
-        // Space:O(n × sum)+ O(n) (recursion stack)
+        // Space:O(n × sum)
         int n=nums.size();
         int total=0;
         for(auto x:nums) total+=x;
@@ -36,8 +14,33 @@ public:
             return 0;
 
         int sum=(total - target)/2;    //we need subset with sum named sum
-        vector<vector<int>> dp(n,vector<int>(sum+1,-1));
+        vector<vector<int>> dp(n,vector<int>(sum+1,0));
 
-        return f(n-1,nums,sum,dp);
+        //base cases
+        if(nums[0] == 0)
+            dp[0][0] = 2;
+        else
+        {
+            dp[0][0] = 1;
+
+            if(nums[0] <= sum)  //Array index out of bounds se bachne ke liye
+                dp[0][nums[0]] = 1;
+        }
+
+        // Fill DP table
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j <= sum; j++) {
+
+                int nottake = dp[i - 1][j];
+
+                int take = 0;
+                if (nums[i] <= j)
+                    take = dp[i - 1][j - nums[i]];
+
+                dp[i][j] = take + nottake;
+            }
+        }
+
+        return dp[n - 1][sum];
     }
 };
