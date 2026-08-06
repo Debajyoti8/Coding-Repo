@@ -4,7 +4,7 @@ public:
     int findTargetSumWays(vector<int>& nums, int target) {
         //Tabulation code
         // Time: O(n × sum)
-        // Space:O(n × sum)
+        // Space:O(sum)
         int n=nums.size();
         int total=0;
         for(auto x:nums) total+=x;
@@ -14,33 +14,37 @@ public:
             return 0;
 
         int sum=(total - target)/2;    //we need subset with sum named sum
-        vector<vector<int>> dp(n,vector<int>(sum+1,0));
+        vector<int> prev(sum + 1, 0);
 
-        //base cases
-        if(nums[0] == 0)
-            dp[0][0] = 2;
-        else
-        {
-            dp[0][0] = 1;
+        // Base cases
+        if (nums[0] == 0)
+            prev[0] = 2;
+        else {
+            prev[0] = 1;
 
-            if(nums[0] <= sum)  //Array index out of bounds se bachne ke liye
-                dp[0][nums[0]] = 1;
+            if (nums[0] <= sum)
+                prev[nums[0]] = 1;
         }
 
-        // Fill DP table
+        // Fill DP
         for (int i = 1; i < n; i++) {
+
+            vector<int> curr(sum + 1, 0);
+
             for (int j = 0; j <= sum; j++) {
 
-                int nottake = dp[i - 1][j];
+                int nottake = prev[j];
 
                 int take = 0;
                 if (nums[i] <= j)
-                    take = dp[i - 1][j - nums[i]];
+                    take = prev[j - nums[i]];
 
-                dp[i][j] = take + nottake;
+                curr[j] = take + nottake;
             }
+
+            prev = curr;
         }
 
-        return dp[n - 1][sum];
+        return prev[sum];
     }
 };
