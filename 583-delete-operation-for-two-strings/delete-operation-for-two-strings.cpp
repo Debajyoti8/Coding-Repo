@@ -1,37 +1,34 @@
 class Solution {
 public:
 
-    int lcs(string &s,string &t)
+    int lcs(string &s, string &t)
     {
-        //Tabulation code by right shifring (1-based indexing)
-        int n=s.size(),m=t.size();
-        vector<vector<int>> dp(n+1,vector<int>(m+1,-1));
+        int n = s.size();
+        int m = t.size();
 
-        //base cases
-        for(int j=0;j<=m;j++) dp[0][j]=0;
-        for(int i=0;i<=n;i++) dp[i][0]=0;
+        vector<int> prev(m + 1, 0), cur(m + 1, 0);
 
-        //explore
-        for(int i=1;i<=n;i++)
+        for(int i = 1; i <= n; i++)
         {
-            for(int j=1;j<=m;j++)
+            for(int j = 1; j <= m; j++)
             {
-                //copy recursion
-                //if match
-                if(s[i-1]==t[j-1])
-                dp[i][j]=1+ dp[i-1][j-1];
-                //if not match
+                if(s[i - 1] == t[j - 1])
+                    cur[j] = 1 + prev[j - 1];
                 else
-                dp[i][j]=0 + max(dp[i-1][j],dp[i][j-1]);
+                    cur[j] = max(prev[j], cur[j - 1]);
             }
+
+            prev = cur;
         }
 
-        return dp[n][m];
+        return prev[m];
     }
 
+
     int minDistance(string word1, string word2) {
+        //space opt
         //Time Complexity  : O(n × m)
-        // Space Complexity : O(n × m)
+        // Space Complexity : O( m)
         int n=word1.size();
         int m=word2.size();
 
