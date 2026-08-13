@@ -1,44 +1,36 @@
 class Solution {
 public:
 
-    int lcs(string &s,string &t)
+    int lcs(string &s, string &t)
     {
-        //Tabulation code by right shifring (1-based indexing)
-        //Time: O(n × m)
-        //Space:DP: O(n × m)
-        int n=s.size(),m=t.size();
-        vector<vector<int>> dp(n+1,vector<int>(m+1,-1));
+        int n = s.size(), m = t.size();
 
-        //base cases
-        for(int j=0;j<=m;j++) dp[0][j]=0;
-        for(int i=0;i<=n;i++) dp[i][0]=0;
+        vector<int> prev(m + 1, 0), cur(m + 1, 0);
 
-        //explore
-        for(int i=1;i<=n;i++)
+        for(int i = 1; i <= n; i++)
         {
-            for(int j=1;j<=m;j++)
+            for(int j = 1; j <= m; j++)
             {
-                //copy recursion
-                //if match
-                if(s[i-1]==t[j-1])
-                dp[i][j]=1+ dp[i-1][j-1];
-                //if not match
+                if(s[i - 1] == t[j - 1])
+                    cur[j] = 1 + prev[j - 1];
                 else
-                dp[i][j]=0 + max(dp[i-1][j],dp[i][j-1]);
+                    cur[j] = max(prev[j], cur[j - 1]);
             }
+            prev = cur;
         }
 
-        return dp[n][m];
+        return prev[m];
     }
 
     int minInsertions(string s) {
         //tabulation
         //Time  = O(n²)
-        //Space = O(n²)
+        //Space : O(n)
         int n=s.size();
         string t=s;
         reverse(t.begin(),t.end());
 
-        return n-lcs(s,t);
+        //we are doing total length - max lps
+        return n-lcs(s,t); //total mai se max lps (-) krnese min insertions milega
     }
 };
