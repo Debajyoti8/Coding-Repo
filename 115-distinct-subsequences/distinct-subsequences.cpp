@@ -1,27 +1,33 @@
 class Solution {
 public:
 
-    int f(int i,int j,string &s, string &t,vector<vector<int>> &dp)
-    {
-        //base case
-        if(j<0) return 1; //s2 matches
-        if(i<0) return 0; //s2 not matches but s1 has no elem left
-        if(dp[i][j]!=-1) return dp[i][j];
-
-        //explore all possibilities
-        if(s[i]==t[j])
-        return dp[i][j]=f(i-1,j-1,s,t,dp)+f(i-1,j,s,t,dp);
-        else 
-        return dp[i][j]=f(i-1,j,s,t,dp);
-    }
-
     int numDistinct(string s, string t) {
-        //Memoization
+        //Tabulation 1-based idx to avoid neg indexing
         //tc-O(nm)
-        //sc-O(nm)+o(n+m)
+        //sc-O(nm)
         int n=s.size();
         int m=t.size();
-        vector<vector<int>> dp(n,vector<int>(m,-1));
-        return f(n-1,m-1,s,t,dp);
+        vector<vector<double>> dp(n+1,vector<double>(m+1,0));
+
+        //base cases
+        for(int i=0;i<=n;i++)
+        dp[i][0]=1; 
+        //2nd base case already covered due to initialising with 0
+        
+        //use nested loops 
+        for(int i=1;i<=n;i++) //i=0 base case already covered
+        {
+            for(int j=1;j<=m;j++)
+            {
+                //explore all possibilities               
+                    if(s[i-1]==t[j-1])
+                    dp[i][j]= dp[i-1][j-1]+dp[i-1][j]; 
+                    else 
+                    dp[i][j]=dp[i-1][j]; 
+                
+            }
+        }
+
+        return (int)dp[n][m];
     }
 };
