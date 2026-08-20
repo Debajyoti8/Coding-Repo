@@ -1,48 +1,49 @@
 class Solution {
 public:
 
-    int f(int i,int j,string &s, string &p,vector<vector<int>> &dp)
-    {
-        //base cases
-        //if p gets exhausted
-        if(i<0 && j<0) return true;
-        if(i>=0 && j<0) return false;
-        //if s gets exhausted
-        if(i<0 && j>=0)
-        {
-            for(int x=0;x<=j;x++)
-            {
-                if(p[x]!='*')
-                return false;
-            }
-            return true;
-        }
-        if(dp[i][j]!=-1) return dp[i][j];
-
-        // explore all combintn
-        //if match
-        if(s[i]==p[j] || p[j]=='?')
-        return dp[i][j]=f(i-1,j-1,s,p,dp);
-        //if no match in char of both strings
-        else
-        {
-            //if * is there
-            if(p[j]=='*')
-            return dp[i][j]=f(i-1,j,s,p,dp) // * ek ya zyada chars match kare
-            ||f(i,j-1,s,p,dp); // * empty string match kare 
-            //if normal char is there
-            else
-            return dp[i][j]=false;   //dp mai store hoga bcz match not possible at all             
-        }
-    }
-
     bool isMatch(string s, string p) {
-        //Memoization
+        //Space opt bt 1-based imp 
         //tc-O(nm)
-        //sc-O(nm)+O(n+m)
+        //sc-O(m)
         int n=s.size();
         int m=p.size();
-        vector<vector<int>> dp(n,vector<int>(m,-1));
-        return f(n-1,m-1,s,p,dp);
+        vector<bool> prev(m+1,0);
+
+        //base cases                      
+        prev[0]=1;
+        // for(int i=1;i<=n;i++) dp[i][0]=0; //this base case wil be used in loops  
+        for(int j=1;j<=m;j++)
+        {
+            if(p[j-1]=='*')
+                prev[j]=prev[j-1];
+        }
+
+        for(int i=1;i<=n;i++)
+        {
+            vector<bool> curr(m+1,0);
+            curr[0]=0;
+            for(int j=1;j<=m;j++)
+            {
+                //copy recurrence
+                // explore all combintn
+                //if match
+                if(s[i-1]==p[j-1] | p[j-1]=='?')
+                curr[j]=prev[j-1];
+                //if no match in char of both strings
+                else
+                {
+                    //if * is there
+                    if(p[j-1]=='*')
+                    curr[j]=prev[j] // * ek ya zyada chars match kare
+                    |curr[j-1]; // * empty string match kare 
+                    //if normal char is there
+                    else
+                    curr[j]=false;   //dp mai store hoga bcz match not possible at all             
+                }
+            }
+            prev=curr;
+        }
+
+        return prev[m];
     }
 };
