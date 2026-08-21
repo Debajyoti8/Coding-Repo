@@ -1,28 +1,34 @@
 class Solution {
 public:
 
-    int f(int i,int n,vector<int>& prices,int buy,vector<vector<int>> &dp)
-    {
-        //base case
-        if(i==n) //Agar saare days khatam ho gaye:toh ab profit kama hi nahi sakte.
-        return 0;
-        if(dp[i][buy]!=-1) return dp[i][buy];
-
-        int profit=0;
-        if(buy) //if not buy till  now,just buy it
-        profit=max(-prices[i] + f(i+1,n,prices,0,dp),f(i+1,n,prices,1,dp)); //max(buy, skip)
-        else    //sell
-        profit=max(prices[i] + f(i+1,n,prices,1,dp), f(i+1,n,prices,0,dp));
-
-        return dp[i][buy]=profit;
-    }
-
     int maxProfit(vector<int>& prices) {
-        //Memoization code
-        //Time - O(n)
-        //Space - O(n) + O(n)
+        //Space opt code
+        //Time - O(2*n)
+        //Space - O(2+2) 
         int n=prices.size();
-        vector<vector<int>> dp(n+1,vector<int>(2,-1));
-        return f(0,n,prices,1,dp);
+        vector<int> ahead(2,0);
+
+        //base case
+        ahead[0]=ahead[1]=0;
+
+        //explore
+        for(int i=n-1;i>=0;i--)
+        {
+            vector<int> curr(2,0);
+            for(int buy=0;buy<2;buy++)
+            {
+                //copy recursion code
+                int profit=0;
+                if(buy) //if not buy till  now,just buy it
+                profit=max(-prices[i] + ahead[0], ahead[1]); //max(buy, skip)
+                else    //sell
+                profit=max(prices[i] + ahead[1], ahead[0]);
+
+                curr[buy]=profit;
+            }
+            ahead=curr;
+        }
+
+        return ahead[1];
     }
 };
