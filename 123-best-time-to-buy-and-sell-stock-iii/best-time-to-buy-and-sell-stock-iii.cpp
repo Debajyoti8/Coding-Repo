@@ -1,33 +1,33 @@
 class Solution {
 public:
-
-    int f(int i,int n,vector<int>& prices,int buy,int cap,vector<vector<vector<int>>> &dp)
-    {
-        //base case
-        if(i==n || cap==0) //Agar saare days khatam ho gaye:toh ab profit kama hi nahi sakte.
-        return 0;
-        if(dp[i][buy][cap]!=-1) return dp[i][buy][cap];
-
-        int profit=0;
-        if(buy) //if not buy till  now,just buy it
-        profit=max(-prices[i] + f(i+1,n,prices,0,cap,dp),f(i+1,n,prices,1,cap,dp)); //max(buy, skip)
-        else    //sell 
-        profit=max(prices[i] + f(i+1,n,prices,1,cap-1,dp), f(i+1,n,prices,0,cap,dp));
-        //jab buy+sell hoga tabhi 1 transac complete hoga so cap dec hoga
-
-        return dp[i][buy][cap]=profit;
-    }
-
     int maxProfit(vector<int>& prices) {
         //Striver 
-        //Memoization code
-        // Time-O(n × 2 × 3)
-        // Space-O(n × 2 × 3)+O(n)
+        //2nd method
+        //Tabulaton code
+        // Time-O(n×4)
+        // Space-O(n×4) 
         int n=prices.size();
-        
-        //3d dp of (ind,buy,cap)
-        vector<vector<vector<int>>> dp(n,vector<vector<int>>(2,vector<int>(3,-1)));
 
-        return f(0,n,prices,1,2,dp);
+        //2d dp of (ind,buy,cap)
+        vector<vector<int>> dp(n+1,vector<int>(5,0));
+
+        //base case already covered (i==n t==4)
+
+        //explore
+        for(int i=n-1;i>=0;i--) //loop starts in opp. fashion
+        {
+            for(int t=3;t>=0;t--)  //loop starts in opp. fashion
+            {
+                //copy recurrence
+                    if(t%2==0) //if not buy till  now,just buy it
+                        dp[i][t]=max(-prices[i] + dp[i+1][t+1],dp[i+1][t]); //max(buy, skip)
+                    else    //sell 
+                        dp[i][t]=max(prices[i]+dp[i+1][t+1],dp[i+1][t]);
+                
+            }
+        }
+
+        //return will always be initial call made in recursion
+        return dp[0][0];
     }
 };
