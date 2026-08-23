@@ -2,23 +2,25 @@ class Solution {
 public:
 
     int maxProfit(vector<int>& prices, int fee) {
-        //Space opt code
+        //Space opt code using 4 variable instead of 2 1D vector
         //Time - O(n) 
-        //Space- O(2+2)=O(1) 
+        //Space- O(4)=O(1) 
         int n=prices.size();
-        vector<int> front(2,0);
+        int frontNotBuy=0,frontBuy=0;
+        int currNotBuy=0,currBuy=0;
 
         //base acse covered
         for(int i=n-1;i>=0;i--)
         {
-             vector<int> curr(2,0);
-                curr[1]=max(-prices[i] + front[0] ,front[1]); //max(buy, skip)
-                //if sell cooldown occurs /skip
-                curr[0]=max(prices[i]-fee + front[1] , front[0]);       
+            //Buy
+                currBuy=max(-prices[i] + frontNotBuy ,frontBuy); //max(buy, skip)
+            //if sell /skip
+                currNotBuy=max(prices[i]-fee + frontBuy , frontNotBuy);       
 
-                front =curr;         
+                frontNotBuy=currNotBuy; 
+                frontBuy= currBuy;       
         }
 
-        return front[1];
+        return frontBuy;
     }
 };
