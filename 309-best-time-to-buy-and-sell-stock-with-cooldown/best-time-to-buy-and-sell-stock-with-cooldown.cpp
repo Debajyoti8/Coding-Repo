@@ -12,17 +12,12 @@ public:
 
         for(int i=n-1;i>=0;i--)
         {
-            for(int buy=0;buy<2;buy++)
-            {
-                //copy recursion
-                int profit=0;
-                if(buy) //if not buy till  now,just buy it
-                profit=max(-prices[i] + dp[i+1][0] ,dp[i+1][1]); //max(buy, skip)
-                else    //if sell cooldown occurs /skip
-                profit=max(prices[i] + dp[i+2][1] , dp[i+1][0]);
-
-                dp[i][buy]=profit;
-            }
+            //more optimised tabulation remove buy
+                //copy recursion                
+                dp[i][1]=max(-prices[i] + dp[i+1][0] ,dp[i+1][1]); //max(buy, skip)
+                //if sell cooldown occurs /skip
+                dp[i][0]=max(prices[i] + dp[i+2][1] , dp[i+1][0]);                
+            
         }
 
         return dp[0][1];
