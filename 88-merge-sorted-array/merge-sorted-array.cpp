@@ -1,37 +1,25 @@
 class Solution {
 public:
     void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
-        int i=0,j=0;
-        vector<int> temp;
-        //both array present
-        while(i<m && j<n)
-        {
-            if(nums1[i]>nums2[j])
-            {
-                temp.push_back(nums2[j]);
-                j++;
-            }
-            else
-            {
-                temp.push_back(nums1[i]);
-                i++;    
-            }
-        }
-        //only nums2 present
-        while(j<n)
-        {
-            temp.push_back(nums2[j]);
-            j++;
-        }
-        //only nums1 present
-        while(i<m)
-        {
-            temp.push_back(nums1[i]);
-            i++;
-        }
+        // Empty space end mein hai → largest element choose karo → end se fill karo.
+        // Time: O(m+n)
+// Space: O(1)
+        // i -> last actual element of nums1
+        // j -> last element of nums2
+        // k -> last position of nums1
 
-        nums1 = temp;
-        
+        int i = m - 1;
+        int j = n - 1;
+        int k = m + n - 1;
+
+        // nums2 is the only array that must be completely processed
+        while(j >= 0) {
+            if(i >= 0 && nums1[i] > nums2[j]) {
+                nums1[k--] = nums1[i--];
+            }
+            else {
+                nums1[k--] = nums2[j--];
+            }
+        }
     }
-
 };
