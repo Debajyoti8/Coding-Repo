@@ -1,22 +1,32 @@
 class Solution {
 public:
     vector<int> twoSum(vector<int>& nums, int target) {
-        // Better approach
-        // TC: O(n) average
+        // previous unordered_map solution is generally more efficient:
+        // TC: O(n log n)
         // SC: O(n)
-        // Works with negative numbers too
 
-        int n = nums.size();
-        unordered_map<long long, int> mp;
+        vector<pair<int,int>> arr;
 
-        for(int i = 0; i < n; i++)
+        // Store {value, original index}
+        for(int i = 0; i < nums.size(); i++)
+            arr.push_back({nums[i], i});
+
+        sort(arr.begin(), arr.end());
+
+        int left = 0, right = arr.size() - 1;
+
+        while(left < right)
         {
-            long long rem = target - nums[i];
-            // Agar insertion pehle kar diya?Same element ko do baar use kar liya.
-            if(mp.find(rem) != mp.end())
-                return {i, mp[rem]};
+            long long sum = (long long)arr[left].first + arr[right].first;
+
+            if(sum == target)
+                return {arr[left].second, arr[right].second};
+
+            else if(sum < target)
+                left++;
+
             else
-                mp[nums[i]] = i;
+                right--;
         }
 
         return {};
