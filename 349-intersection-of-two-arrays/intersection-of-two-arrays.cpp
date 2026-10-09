@@ -2,25 +2,33 @@
 class Solution {
 public:
     vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
-        // Time Complexity: O(n + m) average
-//         Space Complexity: O(n) auxiliary space
-// - Hash set stores at most n unique elements
-// - Output vector is excluded from auxiliary space
-
-        // Store unique elements of nums1 in a hash set
-        unordered_set<int> s(nums1.begin(), nums1.end());
-
+        //TC-O(nlogn+mlogm) , SC-O(min(n,m))
+        //2 pointer approach
+        sort(nums1.begin(),nums1.end());
+        sort(nums2.begin(),nums2.end());
         vector<int> ans;
+        int i=0,j=0;
 
-        // Traverse nums2 and find common elements
-        for (int x : nums2) {
-            // count(x) returns 1 if x exists, otherwise 0
-            if (s.count(x)) {
-                ans.push_back(x); // Add common element
-                s.erase(x);       // Remove it to avoid duplicates
+        int n=nums1.size(),m=nums2.size();
+
+        while(i<n && j<m)
+        {
+            if(nums1[i]==nums2[j])
+            {
+                ans.push_back(nums1[i]);
+                
+                while(i<n-1 && nums1[i]==nums1[i+1])
+                    i++;
+                while(j<m-1 && nums2[j]==nums2[j+1])
+                    j++;
+
+                i++,j++;
             }
+            else if(nums1[i]>nums2[j]) j++;
+            else i++;
         }
 
+        
         return ans;
     }
 };
