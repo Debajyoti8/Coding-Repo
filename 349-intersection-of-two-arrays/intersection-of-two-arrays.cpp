@@ -1,23 +1,28 @@
+
 class Solution {
 public:
     vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
-        // TC-O(nm)
-        // SC-O(1)
-        vector<int> ans;
-        vector<bool> visited(1001,0);
+        // Time Complexity: O(n + m) average
+//         Space Complexity: O(n) auxiliary space
+// - Hash set stores at most n unique elements
+// - Output vector is excluded from auxiliary space
 
-        for(int value:nums1)
-        {
-            for(int i=0;i<nums2.size();i++)
-            {
-                if(nums2[i]==value && !visited[nums2[i]])
-                {
-                    ans.push_back(value);
-                    visited[nums2[i]]=1;
-                    break;
-                }
+        // Store unique elements of nums1 in a hash set
+        unordered_set<int> s(nums1.begin(), nums1.end());
+
+        vector<int> ans;
+
+        // Traverse nums2 and find common elements
+        for (int x : nums2) {
+            // count(x) returns 1 if x exists, otherwise 0
+            if (s.count(x)) {
+                ans.push_back(x); // Add common element
+                s.erase(x);       // Remove it to avoid duplicates
             }
         }
-            return ans;
+
+        return ans;
     }
 };
+
+
