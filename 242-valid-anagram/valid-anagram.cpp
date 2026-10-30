@@ -6,15 +6,15 @@ public:
 
         int n = s.length();
 
-        map<char, int> a, b;
+        map<char, int> counts;
 
         for (int i = 0; i < n; i++) { 
-            a[s[i]]++;
-            b[t[i]]++;
+            counts[s[i]]++;
+            counts[t[i]]--;
         }
         
-        for (char c = 'a';c<='z';c++)
-            if (a[c] != b[c]) return false;
+        for (auto i : counts)
+            if (i.second != 0) return false;
         
         return true;
     }
