@@ -16,21 +16,21 @@ public:
             // Left half is sorted
             if (nums[l] <= nums[mid]) {
 
-                // Target lies outside the sorted left half
-                if (target > nums[mid] || target < nums[l])
-                    l = mid + 1;
-                else
+                // Target lies inside sorted left half
+                if (target >= nums[l] && target < nums[mid])
                     r = mid - 1;
+                else
+                    l = mid + 1;
             }
 
             // Right half is sorted
             else {
 
-                // Target lies outside the sorted right half
-                if (target < nums[mid] || target > nums[r])
-                    r = mid - 1;
-                else
+                // Target lies inside sorted right half
+                if (target > nums[mid] && target <= nums[r])
                     l = mid + 1;
+                else
+                    r = mid - 1;
             }
         }
 
